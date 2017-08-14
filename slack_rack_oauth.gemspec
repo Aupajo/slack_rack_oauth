@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Pete Nicholls"]
   spec.email         = ["aupajo@gmail.com"]
 
-  spec.summary       = %q{Simple Rack middleware for handling Slack's “Add to Slack” OAuth flow.}
+  spec.summary       = %q{Simple Rack middleware for handling Slack's “Add to Slack” button OAuth flow.}
   spec.homepage      = "https://github.com/Aupajo/slack_rack_oauth"
   spec.license       = "MIT"
 
@@ -21,7 +21,10 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "rack"
+
   spec.add_development_dependency "bundler", "~> 1.15"
   spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rack-test", "~>0.6.3"
   spec.add_development_dependency "rspec", "~> 3.0"
 end

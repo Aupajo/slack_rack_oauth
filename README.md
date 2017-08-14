@@ -1,8 +1,6 @@
-# SlackRackOauth
+# SlackRackOAuth
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/slack_rack_oauth`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Zero-dependency Rack middleware for handling Slack's “Add to Slack” button OAuth flow.
 
 ## Installation
 
@@ -12,17 +10,84 @@ Add this line to your application's Gemfile:
 gem 'slack_rack_oauth'
 ```
 
-And then execute:
+And then run:
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install slack_rack_oauth
+    bundle
 
 ## Usage
 
-TODO: Write usage instructions here
+In your `config.ru` or equivalent:
+
+```ruby
+use SlackRackOAuth, {
+  # Required. See Slack docs for available scopes. 
+  scopes: %w( incoming-webhook bot commands reactions.read emoji.list ),
+
+  # Client ID and secret. If not explicitly set, will automatically detect
+  # SLACK_CLIENT_ID and SLACK_CLIENT_SECRET environment variables.
+  client_id: 'my-client-id',
+  client_secret: 'my-client-secret',
+
+  # Use to override the default path prefix ("/slack/oauth"). Two
+  # routes is currently supported:
+  #
+  #     /slack/oauth/authorize (redirects to the Slack OAuth authorization)
+  #     /slack/oauth/callback (your app will need to support this route)
+  # 
+  path: '/slack/oauth'
+}
+
+run MyApp
+```
+
+Inside your app, set up a route to handle a `/slack/oauth/callback` GET request.
+
+From within that request, you will be able to receive the callback information
+from the `slack.auth` key in the Rack `env`, which will look something like this:
+
+```
+{
+  "access_token": "xoxp-XXXXXXXX-XXXXXXXX-XXXXX",
+  "scope": "incoming-webhook,commands,bot",
+  "team_name": "Team Installing Your Hook",
+  "team_id": "XXXXXXXXXX",
+  "incoming_webhook": {
+    "url": "https://hooks.slack.com/TXXXXX/BXXXXX/XXXXXXXXXX",
+    "channel": "#channel-it-will-post-to",
+     "configuration_url": "https://teamname.slack.com/services/BXXXXX"
+  },
+  "bot":{
+    "bot_user_id":"UTTTTTTTTTTR",
+    "bot_access_token":"xoxb-XXXXXXXXXXXX-TTTTTTTTTTTTTT"
+  }
+}
+```
+
+It's up to you how you choose to store that information, and what you want to
+show to the user.
+
+In Rails:
+
+```ruby
+# routes.rb
+get '/slack/oauth/callback', to: 'slack_connections#create'
+
+# controllers/slack_connections.rb
+class SlackConnections < ApplicationController
+  def create
+    slack_auth = request.env['slack.auth']
+    fail "TODO: handle data: #{slack_auth.inspect}"
+  end
+end
+```
+
+In Sinatra:
+
+```ruby
+get '/slack/oauth/callback' do
+  fail "TODO: handle data: #{env['slack.auth']}"
+end
+```
 
 ## Development
 
