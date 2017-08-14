@@ -6,7 +6,7 @@ RSpec.describe SlackRackOAuth do
     
     expect(last_response.status).to be 302
     expect(last_response.location)
-      .to eq 'https://slack.com/oauth/authorize?scope=bot,incoming-webhook&client_id=42'
+      .to eq 'https://slack.com/oauth/authorize?scope=bot%2Cincoming-webhook&client_id=42&redirect_uri=http%3A%2F%2Fexample.org%2Fslack%2Foauth%2Fcallback'
   end
   
   it "does not touch unsupported routes" do

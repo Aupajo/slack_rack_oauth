@@ -4,10 +4,12 @@ Zero-dependency Rack middleware for handling Slack's “Add to Slack” button O
 
 ## Installation
 
-Add this line to your application's Gemfile:
+This gem is a work-in-progress and not yet released.
+
+Clone this repo and this line to your application's Gemfile:
 
 ```ruby
-gem 'slack_rack_oauth'
+gem 'slack_rack_oauth', path: 'path/to/slack_rack_oauth' 
 ```
 
 And then run:
