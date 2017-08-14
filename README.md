@@ -1,5 +1,7 @@
 # SlackRackOAuth
 
+[![Build Status](https://travis-ci.org/Aupajo/slack_rack_oauth.svg?branch=master)](https://travis-ci.org/Aupajo/slack_rack_oauth)
+
 Zero-dependency Rack middleware for handling Slack's “Add to Slack” button OAuth flow.
 
 ## Installation
