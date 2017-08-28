@@ -4,14 +4,15 @@ require 'json'
 
 module SlackRackOAuth
   class Middleware
-    attr_reader :app, :client_id, :client_secret, :path, :scopes
+    attr_reader :app, :client_id, :client_secret, :path, :scopes, :json_options
 
-    def initialize(app, scopes:, client_id: ENV.fetch('SLACK_CLIENT_ID'), client_secret: ENV.fetch('SLACK_CLIENT_SECRET'), path: '/slack/oauth')
+    def initialize(app, scopes:, client_id: ENV.fetch('SLACK_CLIENT_ID'), client_secret: ENV.fetch('SLACK_CLIENT_SECRET'), path: '/slack/oauth', json_options: {})
       @client_id = client_id
       @client_secret = client_secret
       @app = app
       @scopes = Array(scopes)
       @path = path
+      @json_options = json_options
     end
 
     def call(env)
@@ -35,7 +36,7 @@ module SlackRackOAuth
           )
         )
 
-        env['slack.auth'] = JSON.parse(response.body)
+        env['slack.auth'] = JSON.parse(response.body, json_options)
       end
 
       app.call(env)
