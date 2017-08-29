@@ -11,7 +11,7 @@ This gem is a work-in-progress and not yet released.
 Clone this repo and this line to your application's Gemfile:
 
 ```ruby
-gem 'slack_rack_oauth', path: 'path/to/slack_rack_oauth' 
+gem 'slack_rack_oauth', github: 'Aupajo/slack_rack_oauth'
 ```
 
 And then run:
@@ -24,7 +24,7 @@ In your `config.ru` or equivalent:
 
 ```ruby
 use SlackRackOAuth, {
-  # Required. See Slack docs for available scopes. 
+  # Required. See Slack docs for available scopes.
   scopes: %w( incoming-webhook bot commands reactions.read emoji.list ),
 
   # Client ID and secret. If not explicitly set, will automatically detect
@@ -37,7 +37,7 @@ use SlackRackOAuth, {
   #
   #     /slack/oauth/authorize (redirects to the Slack OAuth authorization)
   #     /slack/oauth/callback (your app will need to support this route)
-  # 
+  #
   path: '/slack/oauth'
 }
 
@@ -51,6 +51,7 @@ from the `slack.auth` key in the Rack `env`, which will look something like this
 
 ```
 {
+  "ok": true,
   "access_token": "xoxp-XXXXXXXX-XXXXXXXX-XXXXX",
   "scope": "incoming-webhook,commands,bot",
   "team_name": "Team Installing Your Hook",
@@ -64,6 +65,15 @@ from the `slack.auth` key in the Rack `env`, which will look something like this
     "bot_user_id":"UTTTTTTTTTTR",
     "bot_access_token":"xoxb-XXXXXXXXXXXX-TTTTTTTTTTTTTT"
   }
+}
+```
+
+If the authentication fails, you'll get seomthing like this:
+
+```
+{
+  "ok": false,
+  "error": "code_already_used"
 }
 ```
 
@@ -91,6 +101,14 @@ In Sinatra:
 get '/slack/oauth/callback' do
   fail "TODO: handle data: #{env['slack.auth']}"
 end
+```
+
+## Add to Slack Button
+
+Add the following to your view:
+
+```erb
+<a href="/slack/oauth/authorize"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
 ```
 
 ## Development
